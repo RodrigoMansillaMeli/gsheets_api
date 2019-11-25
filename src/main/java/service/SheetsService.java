@@ -1,21 +1,20 @@
 package service;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
-import config.SheetsConfig;
+import org.apache.log4j.Logger;
 
+import javax.xml.soap.Text;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
 public enum SheetsService {
+
 	INSTANCE;
+
+	private static final Logger logger = Logger.getLogger(SheetsService.class);
 
 	public List<Sheet> createNewSheets(int numOfSheets) {
 		List<Sheet> sheets = new ArrayList<Sheet>();
@@ -84,4 +83,118 @@ public enum SheetsService {
 				.setValueInputOption("RAW")
 				.execute();
 	}
+
+	public BatchUpdateSpreadsheetResponse formatHeadCells(String destinySpreadsheetsId, Integer destinySheetId) throws IOException, GeneralSecurityException {
+		Sheets sheetsService = SpreadsheetService.INSTANCE.SpreadsheetService();
+
+		/**
+		 * Color Structure
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#Color
+		 **/
+		Color myBackgroundColor = new Color();
+		myBackgroundColor.setRed(0.71F);
+		myBackgroundColor.setGreen(0.85F);
+		myBackgroundColor.setBlue(0.29F);
+		myBackgroundColor.setAlpha(1F);
+
+		Color myForegroundColor = new Color();
+		myForegroundColor.setRed(0.17F);
+		myForegroundColor.setGreen(0.19F);
+		myForegroundColor.setBlue(0.44F);
+		myForegroundColor.setAlpha(1F);
+
+		Color myLineBorderColor = new Color();
+		myLineBorderColor.setRed(1F);
+		myLineBorderColor.setGreen(1F);
+		myLineBorderColor.setBlue(1F);
+		myLineBorderColor.setAlpha(1F);
+
+		/**
+		 * Number Format
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#NumberFormat
+		 **/
+
+		NumberFormat myTextNumber = new NumberFormat().setType("TEXT");
+		NumberFormat myNumberNumber = new NumberFormat().setType("NUMBER");
+		NumberFormat myPercentNumber = new NumberFormat().setType("PERCENT");
+
+		/**
+		 * Text Format
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#TextFormat
+		 **/
+
+		TextFormat myText = new TextFormat();
+		myText.setForegroundColor(myForegroundColor);
+		myText.setFontFamily("Hammersmith One"); //Visit https://fonts.google.com/
+		myText.setFontSize(10);
+		myText.setBold(true);
+		myText.setItalic(false);
+		myText.setStrikethrough(false);
+		myText.setUnderline(false);
+
+		/**
+		 * Borders Format
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#Borders
+		 **/
+		Border lineBorder = new Border();
+		lineBorder.setStyle("SOLID"); // Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#Style
+		lineBorder.setWidth(10); // Deprecated
+		lineBorder.setColor(myLineBorderColor);
+
+		Borders titleBorders = new Borders();
+		titleBorders.setTop(lineBorder); //As example, we assing the same border over all sides
+		titleBorders.setBottom(lineBorder);
+		titleBorders.setLeft(lineBorder);
+		titleBorders.setRight(lineBorder);
+
+		/**
+		 * Cell Format
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells
+		 **/
+		CellFormat myFormat = new CellFormat();
+		myFormat.setHorizontalAlignment("CENTER"); // TYPE_ENUM : HORIZONTAL_ALIGN_UNSPECIFIED - LEFT - CENTER - RIGHT
+		myFormat.setVerticalAlignment("MIDDLE"); // TYPE_ENUM : VERTICAL_ALIGN_UNSPECIFIED - BOTTOM - MIDDLE - TOP
+		myFormat.setNumberFormat(myTextNumber);
+		myFormat.setTextFormat(myText);
+		myFormat.setBackgroundColor(myBackgroundColor); // red&blue background
+		myFormat.setTextFormat(myText); // 16pt font
+		myFormat.setBorders(titleBorders);
+
+		/**
+		 * Cell Format
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#celldata
+		 **/
+		CellData cellData = new CellData();
+		cellData.setUserEnteredFormat(myFormat);
+
+		/**
+		 * RepeatCellRequest
+		 * Visit https://developers.google.com/resources/api-libraries/documentation/sheets/v4/java/latest/com/google/api/services/sheets/v4/model/RepeatCellRequest.html
+		 * Appling cell format to a range
+		 **/
+		RepeatCellRequest repeatCellRequest = new RepeatCellRequest();
+		repeatCellRequest.setFields("*");
+		repeatCellRequest.setRange(new GridRange()
+				.setSheetId(destinySheetId)
+				.setStartRowIndex(0)
+				.setEndRowIndex(1)
+				.setStartColumnIndex(0)
+				.setEndColumnIndex(8));
+		repeatCellRequest.setCell(cellData);
+
+		/**
+		 * Requests list
+		 */
+		List<Request> requests = new ArrayList<Request>();
+		requests.add(new Request().setRepeatCell(repeatCellRequest));
+
+		BatchUpdateSpreadsheetRequest body =
+				new BatchUpdateSpreadsheetRequest()
+						.setIncludeSpreadsheetInResponse(true)
+						.setResponseIncludeGridData(true)
+						.setRequests(requests);
+
+		return sheetsService.spreadsheets().batchUpdate(destinySpreadsheetsId, body).setFields("*").execute();
+	}
+
 }

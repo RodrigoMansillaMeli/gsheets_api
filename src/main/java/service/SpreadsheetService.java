@@ -13,22 +13,17 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public enum SpreadsheetService {
+
 	INSTANCE;
+
 	private final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
 	private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-	Sheets SpreadsheetService() {
-		try {
-			final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			Credential credential = SheetsConfig.getCredentials(HTTP_TRANSPORT, JSON_FACTORY);
-			return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-					.setApplicationName(APPLICATION_NAME)
-					.build();
-		} catch (IOException exception) {
-			throw new RuntimeException(exception);
-		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
-		}
-		return null;
+	Sheets SpreadsheetService() throws IOException, GeneralSecurityException {
+		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+		Credential credential = SheetsConfig.getCredentials(HTTP_TRANSPORT, JSON_FACTORY);
+		return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+				.setApplicationName(APPLICATION_NAME)
+				.build();
 	}
 }

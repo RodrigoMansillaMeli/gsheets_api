@@ -1,6 +1,8 @@
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import org.apache.log4j.net.SimpleSocketServer;
 import service.SheetsService;
 
 import java.io.IOException;
@@ -26,6 +28,12 @@ public class SheetsApplication {
 
 		SheetsService.INSTANCE.clearValuesFromSheet(destinySpreadsheetsId, sheetNameToClear);
 
+		/**
+		 * Aplicamos formato a un rango, por ahora, hardcodeado
+		 */
+		Integer destinySheetId = 704011430; //Usamos la hoja creada en ejecuciones anteriores
+
+		SheetsService.INSTANCE.formatHeadCells(destinySpreadsheetsId, destinySheetId);
 
 		/**
 		 * Leemos un SpreadSheet
@@ -93,5 +101,7 @@ public class SheetsApplication {
 				));
 
 		UpdateValuesResponse updateResult = SheetsService.INSTANCE.updateDataToSheet(destinySpreadsheetsId, updateInRange, updateBody, destinyValueInputOption);
+
+
 	}
 }
