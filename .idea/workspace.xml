@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="8153c823-84ef-4ed5-b6ee-2b4fca9a37a9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SheetsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SheetsApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/SheetsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SheetsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/SpreadsheetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SpreadsheetService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/SheetsApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SheetsApplication.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/service/SheetsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/service/SheetsService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/SpreadsheetService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/service/SpreadsheetService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tokens/StoredCredential" beforeDir="false" afterPath="$PROJECT_DIR$/tokens/StoredCredential" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -100,7 +97,8 @@
       <workItem from="1574448991475" duration="4214000" />
       <workItem from="1574527011844" duration="373000" />
       <workItem from="1574686509715" duration="69000" />
-      <workItem from="1574686810718" duration="12874000" />
+      <workItem from="1574686810718" duration="17145000" />
+      <workItem from="1574770980782" duration="8859000" />
     </task>
     <servers />
   </component>

@@ -31,30 +31,36 @@ public class SheetsApplication {
 		/**
 		 * Aplicamos formato a un rango, por ahora, hardcodeado
 		 */
-		Integer destinySheetId = 704011430; //Usamos la hoja creada en ejecuciones anteriores
 
-		SheetsService.INSTANCE.formatHeadCells(destinySpreadsheetsId, destinySheetId);
+		/*Integer destinySheetId = 704011430; //Usamos la hoja creada en ejecuciones anteriores
+		Integer percentColumnNumber = 8;
+
+		SheetsService.INSTANCE.formatPercentColumns(destinySpreadsheetsId, destinySheetId, percentColumnNumber);
+
+		SheetsService.INSTANCE.formatHeadCells(destinySpreadsheetsId, destinySheetId);*/
 
 		/**
 		 * Leemos un SpreadSheet
 		 * Con el spreadsheetId de ejemplo que tenemos en el Drive
 		 */
 		final String originSpreadsheetsId = "1gJKGozHe6SB4NHMU8SeMhEEC4yE8MUEZ7qc8HgvkciE"; //Tiene los datos de origen
-		//final String originRange = "Datos!A1:ZZZ"; Seteamos nombre de la hoja, donde arrancan los datos y hasta cual columna (COPIA TODO)
-		final String originRange = "Datos"; //Seteamos para que copie toda la hoja
+		final String originHeadersRange = "Datos!A1:ZZZ1";
+		final String originDataRange = "Datos!A2:ZZZ"; //Seteamos nombre de la hoja, donde arrancan los datos y hasta cual columna (COPIA TODO)
+		//final String originRange = "Datos"; //Seteamos para que copie toda la hoja
 
-		List<List<Object>> originValues = SheetsService.INSTANCE.retrieveDataFromSheet(originSpreadsheetsId, originRange);
+		List<List<Object>> originHeadersValues = SheetsService.INSTANCE.retrieveDataFromSheet(originSpreadsheetsId, originHeadersRange);
+		List<List<Object>> originDataValues = SheetsService.INSTANCE.retrieveDataFromSheet(originSpreadsheetsId, originDataRange);
 
 		//Probamos la lectura con un print.
-		if (originValues == null || originValues.isEmpty()) {
+		/*if (originValues == null || originValues.isEmpty()) {
 			System.out.println("No data found.");
 		} else {
 			System.out.println("Name, Major, Class Level, Numeric Column, Float Column");
 			for (List row : originValues) {
-				// Print columns A and E, which correspond to indices 0 and 4.
-				System.out.printf("%s, %s, %s\n", row.get(0), row.get(4), row.get(2), row.get(6), row.get(7));
+				// Print columns A and E, which correspond to indices 0 and 4
+				System.out.printf("%s, %s, %s, %s, %s\n", row.get(0), row.get(4), row.get(2), row.get(6), row.get(7));
 			}
-		}
+		}*/
 
 		/**
 		 * Con los valores de la lectura anterior, actualizamos el nuevo
@@ -63,21 +69,23 @@ public class SheetsApplication {
 		 *
 		 * ESTO NO BORRA LA HOJA, SOLO PISA EL RANGO QUE SE ACTUALIZA
 		 */
-		String destinyRange = "Hoja 1";
-		String destinyValueInputOption = "RAW";
+		String destinyDataRange = "Hoja 1!A2:ZZZ";
+		String destinyHeadersRange = "Hoja 1!A1:ZZZ1";
+		String destinyValueInputOption = "USER_ENTERED";
 
-		ValueRange destinyBody = new ValueRange()
-				.setValues(originValues);
+		ValueRange destinyHeadersBody = new ValueRange()
+				.setValues(originHeadersValues);
 
-		UpdateValuesResponse destinyResult = SheetsService.INSTANCE.writeDataToSheet(destinySpreadsheetsId, destinyRange, destinyBody, destinyValueInputOption);
+		ValueRange destinyDataBody = new ValueRange()
+				.setValues(originDataValues);
 
-		System.out.printf("\n%s range updated.\n", destinyResult.getUpdatedRange());
-
+		SheetsService.INSTANCE.writeDataToSheet(destinySpreadsheetsId, destinyHeadersRange, destinyHeadersBody, destinyValueInputOption);
+		SheetsService.INSTANCE.writeDataToSheet(destinySpreadsheetsId, destinyDataRange, destinyDataBody, destinyValueInputOption);
 
 		/**
 		 * Agregar registros nuevos en la hoja
 		 */
-		String appendToSheet = "Hoja 1";
+		/*String appendToSheet = "Hoja 1";
 		destinyValueInputOption = "USER_ENTERED";
 		String insertDataOption = "INSERT_ROWS";
 		ValueRange appendBody = new ValueRange()
@@ -87,21 +95,17 @@ public class SheetsApplication {
 
 		AppendValuesResponse appendResult = SheetsService.INSTANCE.appendDataToSheet(destinySpreadsheetsId, appendToSheet, appendBody, destinyValueInputOption, insertDataOption);
 
-		System.out.printf("\n%s range updated.\n", appendResult.getTableRange());
+		System.out.printf("\n%s range updated.\n", appendResult.getTableRange());*/
 
 		/**
 		 * Actualizar a partir de un rango!
 		 */
-
-
-		String updateInRange = "G1";
+		/*String updateInRange = "G1";
 		ValueRange updateBody = new ValueRange()
 				.setValues(Arrays.asList(
 						Arrays.<Object>asList("TestColumn", "TESTCOLUMN")
 				));
 
-		UpdateValuesResponse updateResult = SheetsService.INSTANCE.updateDataToSheet(destinySpreadsheetsId, updateInRange, updateBody, destinyValueInputOption);
-
-
+		UpdateValuesResponse updateResult = SheetsService.INSTANCE.updateDataToSheet(destinySpreadsheetsId, updateInRange, updateBody, destinyValueInputOption);*/
 	}
 }

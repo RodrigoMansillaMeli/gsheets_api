@@ -3,6 +3,8 @@ package service;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import org.apache.log4j.Logger;
+import org.w3c.dom.ranges.Range;
+import sun.awt.SunHints;
 
 import javax.xml.soap.Text;
 import java.io.IOException;
@@ -53,6 +55,8 @@ public enum SheetsService {
 				.get(originSpreadsheetsId, originRange)
 				.execute();
 
+		Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(originSpreadsheetsId);
+
 		return originValueRange.getValues();
 	}
 
@@ -61,6 +65,7 @@ public enum SheetsService {
 
 		return sheetsService.spreadsheets().values().update(destinySpreadsheetsId, destinyRange, destinyBody)
 				.setValueInputOption(destinyValueInputOption)
+				.setResponseValueRenderOption("FORMATTED_VALUE")
 				.execute();
 	}
 
@@ -84,7 +89,7 @@ public enum SheetsService {
 				.execute();
 	}
 
-	public BatchUpdateSpreadsheetResponse formatHeadCells(String destinySpreadsheetsId, Integer destinySheetId) throws IOException, GeneralSecurityException {
+	public void formatHeadCells(String destinySpreadsheetsId, Integer destinySheetId) throws IOException, GeneralSecurityException {
 		Sheets sheetsService = SpreadsheetService.INSTANCE.SpreadsheetService();
 
 		/**
@@ -157,7 +162,6 @@ public enum SheetsService {
 		myFormat.setNumberFormat(myTextNumber);
 		myFormat.setTextFormat(myText);
 		myFormat.setBackgroundColor(myBackgroundColor); // red&blue background
-		myFormat.setTextFormat(myText); // 16pt font
 		myFormat.setBorders(titleBorders);
 
 		/**
@@ -172,14 +176,16 @@ public enum SheetsService {
 		 * Visit https://developers.google.com/resources/api-libraries/documentation/sheets/v4/java/latest/com/google/api/services/sheets/v4/model/RepeatCellRequest.html
 		 * Appling cell format to a range
 		 **/
+		GridRange gridRange = new GridRange();
+		gridRange.setSheetId(destinySheetId);
+		gridRange.setStartRowIndex(0);
+		gridRange.setEndRowIndex(1);
+		gridRange.setStartColumnIndex(0);
+		gridRange.setEndColumnIndex(8);
+
 		RepeatCellRequest repeatCellRequest = new RepeatCellRequest();
 		repeatCellRequest.setFields("*");
-		repeatCellRequest.setRange(new GridRange()
-				.setSheetId(destinySheetId)
-				.setStartRowIndex(0)
-				.setEndRowIndex(1)
-				.setStartColumnIndex(0)
-				.setEndColumnIndex(8));
+		repeatCellRequest.setRange(gridRange);
 		repeatCellRequest.setCell(cellData);
 
 		/**
@@ -194,7 +200,76 @@ public enum SheetsService {
 						.setResponseIncludeGridData(true)
 						.setRequests(requests);
 
-		return sheetsService.spreadsheets().batchUpdate(destinySpreadsheetsId, body).setFields("*").execute();
+		sheetsService.spreadsheets().batchUpdate(destinySpreadsheetsId, body).setFields("*").execute();
 	}
 
+	public void formatPercentColumns(String destinySpreadsheetsId, Integer destinySheetId, Integer columnNumber) throws IOException, GeneralSecurityException {
+		Sheets sheetsService = SpreadsheetService.INSTANCE.SpreadsheetService();
+
+		/**
+		 * Number Format
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#NumberFormat
+		 **/
+		NumberFormat myPercentNumber = new NumberFormat().setType("PERCENT").setPattern("0.##%");
+
+		/**
+		 * Cell Format
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells
+		 **/
+		CellFormat myFormat = new CellFormat();
+
+		myFormat.setNumberFormat(myPercentNumber);
+
+		/**
+		 * Cell Data
+		 * Visit https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#celldata
+		 **/
+		CellData cellData = new CellData();
+		cellData.setUserEnteredValue(new ExtendedValue().setNumberValue(0.211));
+		cellData.setUserEnteredFormat(myFormat);
+
+		/**
+		 * RepeatCellRequest
+		 * Visit https://developers.google.com/resources/api-libraries/documentation/sheets/v4/java/latest/com/google/api/services/sheets/v4/model/RepeatCellRequest.html
+		 * Appling cell format to a range
+		 **/
+		GridRange gridRange = new GridRange();
+		gridRange.setSheetId(destinySheetId);
+		gridRange.setStartRowIndex(1);
+		gridRange.setStartColumnIndex(columnNumber-1);
+		gridRange.setEndColumnIndex(columnNumber);
+
+
+
+		MergeCellsRequest mergeCellsRequest = new MergeCellsRequest();
+		mergeCellsRequest.setRange(gridRange);
+		mergeCellsRequest.setMergeType("MERGE_COLUMNS");
+
+
+
+		RepeatCellRequest repeatCellRequest = new RepeatCellRequest();
+		repeatCellRequest.setFields("*");
+		repeatCellRequest.setRange(new GridRange()
+				.setSheetId(destinySheetId)
+				.setStartRowIndex(1)
+				.setStartColumnIndex(columnNumber-1)
+				.setEndColumnIndex(columnNumber));
+		repeatCellRequest.setCell(cellData);
+
+
+		/**
+		 * Requests list
+		 */
+		List<Request> requests = new ArrayList<Request>();
+		requests.add(new Request().setMergeCells(mergeCellsRequest));
+		requests.add(new Request().setRepeatCell(repeatCellRequest));
+
+		BatchUpdateSpreadsheetRequest body =
+				new BatchUpdateSpreadsheetRequest()
+						.setIncludeSpreadsheetInResponse(true)
+						.setResponseIncludeGridData(true)
+						.setRequests(requests);
+
+		sheetsService.spreadsheets().batchUpdate(destinySpreadsheetsId, body).setFields("*").execute();
+	}
 }
