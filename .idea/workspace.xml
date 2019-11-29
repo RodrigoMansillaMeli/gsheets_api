@@ -3,10 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="8153c823-84ef-4ed5-b6ee-2b4fca9a37a9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SheetsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SheetsApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/SheetsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SheetsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resource/credentials.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resource/credentials.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/SheetsApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SheetsApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/config/SheetsConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config/SheetsConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/credentials.json" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/credentials.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/service/SheetsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/service/SheetsService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/service/SpreadsheetService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/service/SpreadsheetService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tokens/StoredCredential" beforeDir="false" afterPath="$PROJECT_DIR$/tokens/StoredCredential" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -39,6 +43,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -117,5 +122,21 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/SheetsApplication.java</url>
+          <line>134</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/SheetsApplication.java</url>
+          <line>137</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

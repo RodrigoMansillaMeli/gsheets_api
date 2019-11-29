@@ -2,13 +2,16 @@ import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
 import org.apache.log4j.net.SimpleSocketServer;
 import service.SheetsService;
 
-import java.io.IOException;
+import java.io.*;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class SheetsApplication {
 	public static void main(String... args) throws IOException, GeneralSecurityException {
@@ -19,7 +22,7 @@ public class SheetsApplication {
 		/*String title = "Destiny Google Sheets API";
 		List<Sheet> sheets = service.SheetsService.createNewSheets(4); //Probablemente se cree el google spreadsheet a mano
 		String destinySpreadsheetsId = service.SheetsService.createNewSpreadsheet(sheets, title);*/
-		String destinySpreadsheetsId = "11PfAldXunbJJiWcx0DhrhGee3C-n9Qpq1TGhLd0_wU0"; //Usamos el archivo que creamos en ejecuciones anteriores
+		String destinySpreadsheetsId = "1pOMVZ9AgtJsJo3-q6LcgPeHHlLr_VAE8EQKYgCeAruc"; //Usamos el archivo que creamos en ejecuciones anteriores
 
 		/**
 		 * Eliminar datos de una hoja
@@ -43,7 +46,7 @@ public class SheetsApplication {
 		 * Leemos un SpreadSheet
 		 * Con el spreadsheetId de ejemplo que tenemos en el Drive
 		 */
-		final String originSpreadsheetsId = "1gJKGozHe6SB4NHMU8SeMhEEC4yE8MUEZ7qc8HgvkciE"; //Tiene los datos de origen
+		final String originSpreadsheetsId = "1ZHoIuRlTTRNN4jUw7OFAEu04XgeAMAIjPR3ti7otA2U"; //Tiene los datos de origen
 		final String originHeadersRange = "Datos!A1:ZZZ1";
 		final String originDataRange = "Datos!A2:ZZZ"; //Seteamos nombre de la hoja, donde arrancan los datos y hasta cual columna (COPIA TODO)
 		//final String originRange = "Datos"; //Seteamos para que copie toda la hoja
@@ -79,23 +82,60 @@ public class SheetsApplication {
 		ValueRange destinyDataBody = new ValueRange()
 				.setValues(originDataValues);
 
+		//Escribe los datos sobre sheet destiny.
+
+		System.out.println(destinyValueInputOption);
 		SheetsService.INSTANCE.writeDataToSheet(destinySpreadsheetsId, destinyHeadersRange, destinyHeadersBody, destinyValueInputOption);
 		SheetsService.INSTANCE.writeDataToSheet(destinySpreadsheetsId, destinyDataRange, destinyDataBody, destinyValueInputOption);
 
 		/**
+		 * Lee datos desde CSV
+		 */
+
+		String fileName= "/Users/abasile/eclipse-workspace/testeo/src/testeo/datos.csv";
+		File file= new File(fileName);
+
+		// this gives you a 2-dimensional array of strings
+		List<List<Object>> lines = new ArrayList<>();
+		Scanner inputStream;
+
+		System.out.println(lines);
+
+		try{
+			inputStream = new Scanner(file);
+
+			while(inputStream.hasNext()){
+				String line= inputStream.next();
+				String[] values = line.split(",");
+
+				// this adds the currently parsed line to the 2-dimensional string array
+				lines.add(Arrays.<Object>asList(values));
+
+
+			}
+
+			inputStream.close();
+		}catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(lines);
+
+
+
+		/**
 		 * Agregar registros nuevos en la hoja
 		 */
-		/*String appendToSheet = "Hoja 1";
+		String appendToSheet = "Hoja 1";
 		destinyValueInputOption = "USER_ENTERED";
 		String insertDataOption = "INSERT_ROWS";
 		ValueRange appendBody = new ValueRange()
-				.setValues(Arrays.asList(
-						Arrays.<Object>asList("TestCarlos", "Male", "4. Senior", "CA", "English", "Drama Club")
-				));
+				.setValues(lines);
 
 		AppendValuesResponse appendResult = SheetsService.INSTANCE.appendDataToSheet(destinySpreadsheetsId, appendToSheet, appendBody, destinyValueInputOption, insertDataOption);
 
-		System.out.printf("\n%s range updated.\n", appendResult.getTableRange());*/
+		System.out.printf("\n%s range updated.\n", appendResult.getTableRange());
+
 
 		/**
 		 * Actualizar a partir de un rango!
@@ -107,5 +147,12 @@ public class SheetsApplication {
 				));
 
 		UpdateValuesResponse updateResult = SheetsService.INSTANCE.updateDataToSheet(destinySpreadsheetsId, updateInRange, updateBody, destinyValueInputOption);*/
+
+		/**
+		 * Lectura de csv
+		 */
+
+
+
 	}
 }
